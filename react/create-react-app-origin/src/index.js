@@ -3,7 +3,7 @@
 import './index.css';
 // import App from './App';
 // import reportWebVitals from './reportWebVitals';
-import FhyDOM from './react/react-dom' 
+import FhyDOM from './react/react-dom'
 
 // ReactDOM.render(
 //   <React.StrictMode>
@@ -23,7 +23,4 @@ const jsx = (
 
 FhyDOM.render(jsx, document.getElementById('root'))
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
+// 原生标签 文本节点 函数组件 类组件 等等
