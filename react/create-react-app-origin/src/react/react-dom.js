@@ -1,15 +1,16 @@
-import { isStr, updateNode } from '../utils/utils.js'
+// import { isStr, updateNode } from '../utils/utils.js'
+import {scheduleUpdateOnFiber} from './ReactFiberWorkLoop.js'
 
 function render(vnode, container) {
   // vnode（host原生标签）->node
   // 把node 更新到container
   console.log("vnode", vnode)
   const fiberRoot = {
-    type: Node.nodeName.toLocaleLowerCase(),
+    type: container.nodeName.toLocaleLowerCase(),
     stateNode: container,
     props: {
-      children
-    }
+      children: vnode.props.children,
+    },
   }
 
   scheduleUpdateOnFiber(fiberRoot);

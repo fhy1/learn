@@ -1,13 +1,16 @@
-// work in progress; 当前正在工作中的
+// work in progress; 当前正在工作中的 wip
 
 import { isStr } from "../utils/utils";
+import {updateHostComponent} from './ReactFiberReconcile.js'
 
-// let wip = null
+let wipRoot = null
 let nextUnitofWork = null;
 
 
-export function scheduleUpdateOnFiber() {
-  
+export function scheduleUpdateOnFiber(fiber) {
+  wipRoot = fiber
+  wipRoot.sibling = null;
+  nextUnitofWork = wipRoot;
 }
 
 function performUnitOfWork(wip) {
