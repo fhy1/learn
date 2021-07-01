@@ -1,8 +1,9 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+import MyRouter from '../my-router/my-router'
+// import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 
-Vue.use(VueRouter)
+Vue.use(MyRouter)
 
 const routes = [
   {
@@ -20,7 +21,7 @@ const routes = [
   }
 ]
 
-const router = new VueRouter({
+const router = new MyRouter({
   routes
 })
 
