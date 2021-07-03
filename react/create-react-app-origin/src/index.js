@@ -12,12 +12,21 @@ import FhyDOM from './react/react-dom'
 //   document.getElementById('root')
 // );
 
+function FunctionComponent(props) {
+  return (
+    <div className="border">
+      <p>{props.name}</p>
+    </div>
+  )
+}
+
 const jsx = (
   <div className="big">
     <h1>
       你们都是大佬
     </h1>
     <div>离谱强</div>
+    <FunctionComponent name="最爱菁菁" />
   </div>
 );
 

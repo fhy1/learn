@@ -9,7 +9,7 @@ function render(vnode, container) {
     type: container.nodeName.toLocaleLowerCase(),
     stateNode: container,
     props: {
-      children: vnode.props.children,
+      children: vnode,
     },
   }
 
