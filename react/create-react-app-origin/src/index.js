@@ -13,6 +13,7 @@ import FhyDOM from './react/react-dom'
 // );
 
 function FunctionComponent(props) {
+  console.log(1111111)
   return (
     <div className="border">
       <p>{props.name}</p>

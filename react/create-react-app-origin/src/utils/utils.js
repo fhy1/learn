@@ -4,7 +4,7 @@ export const Update = 4;
 export const Deletion = 8;
 
 export function isFn(fn) {
-  return typeof fn === 'funciton';
+  return typeof fn === 'function'
 }
 
 export function isStr(s) {

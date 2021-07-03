@@ -11,7 +11,6 @@ let nextUnitofWork = null;
 
 
 export function scheduleUpdateOnFiber(fiber) {
-  console.log(fiber)
   wipRoot = fiber
   wipRoot.sibling = null;
   nextUnitofWork = wipRoot;
@@ -69,7 +68,7 @@ function commitWorker(wip) {
   // v-node => node
   const { stateNode } = wip;
   // parentNode 就是父dom节点
-  let parentNode = wip.return.stateNode
+  let parentNode = getParentNode(wip.return)
   if (stateNode) {
     parentNode.appendChild(stateNode)
   }
@@ -78,4 +77,15 @@ function commitWorker(wip) {
   commitWorker(wip.child)
   // 3.更新兄弟
   commitWorker(wip.sibling)
+}
+
+function getParentNode(wip) {
+  let tem = wip
+  while (tem) {
+    if (tem.stateNode) {
+      return tem.stateNode
+    }
+    tem = tem.return;
+  }
+  // return null;
 }
