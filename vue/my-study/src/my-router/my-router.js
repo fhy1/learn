@@ -1,5 +1,4 @@
 let Vue
-
 class MyRouter {
   constructor (options) {
     this.$options = options
@@ -16,14 +15,15 @@ class MyRouter {
   }
 }
 
-MyRouter.install = (_vue) => {
-  Vue = _vue
-
+MyRouter.install = (_Vue) => {
+  Vue = _Vue
   Vue.mixin({
     beforeCreate () {
       if (this.$options.router) {
+        // 如果存在说明是根实例
         Vue.prototype.$router = this.$options.router
       }
+      console.log(111)
     }
   })
 
@@ -35,8 +35,6 @@ MyRouter.install = (_vue) => {
       }
     },
     render (h) {
-      // 需要jsx环境不推荐
-      // return <a href={'#' + this.to}>{this.$slots.default}</a>
       return h(
         'a', // 标签名称
         {
@@ -48,6 +46,7 @@ MyRouter.install = (_vue) => {
       )
     }
   })
+
   Vue.component('router-view', {
     render (h) {
       let component = null
