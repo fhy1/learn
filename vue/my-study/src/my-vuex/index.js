@@ -5,13 +5,25 @@ class Store {
   constructor (options) {
     this._mutations = options.mutations
     this._actions = options.actions
-    // this.state = options.state
+    this._getters = options.getters
+    this._newgetters = {}
 
     this._vm = new Vue({
       data () {
         // 可加  _  或 $$ 就可以禁止代理
-        return { $$state: options.state }
+        return {
+          $$state: options.state,
+          getters: {
+
+          }
+        }
       }
+      // computed: {
+      //   myGetter () {
+      //     console.log('state', this.state)
+      //     return this._newgetters
+      //   }
+      // }
     })
 
     this.commit = this.commit.bind(this)
@@ -42,6 +54,20 @@ class Store {
       return
     }
     entry(this, payload)
+  }
+
+  get getters () {
+    this._newgetters = this.changeGetter()
+    // return this._newgetters
+    return this._newgetters
+  }
+
+  changeGetter () {
+    const _newgetters = {}
+    Object.keys(this._getters).forEach((item) => {
+      _newgetters[item] = this._getters[item](this.state) // options.getters[item](options.state)
+    })
+    return _newgetters
   }
 }
 

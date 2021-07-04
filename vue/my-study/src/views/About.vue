@@ -4,7 +4,7 @@
     <h1>{{$store.state.count}}</h1>
     <button @click="increment">点击</button>
     <button @click="increment2">点击2</button>
-    <!-- {{ $store.getters.doubleCounter }} -->
+    <div>{{ $store.getters.doubleCounter }}</div>
   </div>
 </template>
 
@@ -23,7 +23,6 @@ export default {
   methods: {
     increment () {
       this.$store.dispatch('increment')
-      // console.log(this.$store.state.count)
     },
     increment2 () {
       this.$store.commit('increment')

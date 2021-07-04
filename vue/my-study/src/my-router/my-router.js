@@ -23,7 +23,6 @@ MyRouter.install = (_Vue) => {
         // 如果存在说明是根实例
         Vue.prototype.$router = this.$options.router
       }
-      console.log(111)
     }
   })
 
@@ -55,7 +54,7 @@ MyRouter.install = (_Vue) => {
       const route = this.$router.$options.routes.find(
         (route) => route.path === this.$router.current
       )
-      console.log(this.$router.current, this.$router.$options)
+      // console.log(this.$router.current, this.$router.$options)
       if (route) {
         component = route.component
       }
