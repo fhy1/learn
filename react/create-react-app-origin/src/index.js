@@ -1,10 +1,10 @@
-// import React from 'react';
+// import {useState, useReducer} from 'react';
 // import ReactDOM from 'react-dom';
 import './index.css';
 // import App from './App';
 // import reportWebVitals from './reportWebVitals';
-import FhyDOM from './react/react-dom'
-
+import {useReducer} from './react/myreact'
+import FhyDOM from './react/react-dom.js';
 // ReactDOM.render(
 //   <React.StrictMode>
 //     <App />
@@ -13,10 +13,24 @@ import FhyDOM from './react/react-dom'
 // );
 
 function FunctionComponent(props) {
-  console.log(1111111)
+  // 管理许多 数据、链表
+  // 
+  // fiber.memoizedState => hook0(next) => hook1(next) 
+  // workInProgressHook
+  // const [count1, setCount1] = useState(0) //hook0
+  const [count2, setCount2] = useReducer((x) => x + 1,0 ) //hook1
+  
   return (
     <div className="border">
       <p>{props.name}</p>
+      {/* <button onClick={() => setCount1(count1 + 1)}>
+        {count1}
+      </button> */}
+      <button onClick={() => {
+        setCount2()
+      }}>
+        {count2}
+      </button>
     </div>
   )
 }

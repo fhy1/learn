@@ -1,6 +1,6 @@
 // work in progress; 当前正在工作中的 wip
 
-import { isStr, isFn } from '../utils/utils'
+import { isStr, isFn, Placement, Update, updateNode } from '../utils/utils'
 import {
   updateHostComponent,
   updateFuncionComponent,
@@ -11,6 +11,8 @@ let nextUnitofWork = null;
 
 
 export function scheduleUpdateOnFiber(fiber) {
+  fiber.alternate = {...fiber}
+
   wipRoot = fiber
   wipRoot.sibling = null;
   nextUnitofWork = wipRoot;
@@ -45,10 +47,12 @@ function workLoop(IdleDeadline) {
     // 1.更新当前任务 2.返回下一个任务
     nextUnitofWork = performUnitOfWork(nextUnitofWork)
 
-    //
-    if (!nextUnitofWork && wipRoot) {
-      commotRoot();
-    }
+  }
+  requestIdleCallback(workLoop);
+  
+  //
+  if (!nextUnitofWork && wipRoot) {
+    commotRoot();
   }
 }
 
@@ -57,7 +61,8 @@ requestIdleCallback(workLoop)
 
 
 function commotRoot() {
-  commitWorker(wipRoot.child)
+  isFn(wipRoot.type) ? commitWorker(wipRoot) : commitWorker(wipRoot.child)
+  wipRoot = null
 }
 
 function commitWorker(wip) {
@@ -66,11 +71,15 @@ function commitWorker(wip) {
   }
   // 1.更新自己
   // v-node => node
-  const { stateNode } = wip;
+  const { flags, stateNode } = wip;
   // parentNode 就是父dom节点
   let parentNode = getParentNode(wip.return)
-  if (stateNode) {
+  if ( flags & Placement && stateNode) {
     parentNode.appendChild(stateNode)
+  }
+
+  if (flags & Update && stateNode) {
+    updateNode(stateNode, wip.alternate.props, wip.props);
   }
 
   // 2.更新子节点

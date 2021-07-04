@@ -23,7 +23,21 @@ export function isStringOrNumber(s) {
   return typeof s === 'string' || typeof s === 'number'
 }
 
-export function updateNode(node, nextVal) {
+export function updateNode(node, prevVal, nextVal) {
+  Object.keys(prevVal).forEach((k) => {
+    if (k === 'children') {
+      if (isStringOrNumber(prevVal[k])) {
+        node.textContent = ""
+      }
+    } else if (k.slice(0, 2) === "on") {
+      const eventName = k.slice(2).toLocaleLowerCase();
+      node.removeEventListener(eventName, prevVal[k]);
+    } else {
+      if (!(k in nextVal)) {
+        node[k] = '';
+      }
+    }
+  })
   Object.keys(nextVal).forEach((k) => {
     if (k === 'children') {
       if (isStringOrNumber(nextVal[k])) {

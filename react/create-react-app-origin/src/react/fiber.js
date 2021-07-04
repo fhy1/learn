@@ -1,4 +1,4 @@
-import { NoFlags, Placement , Update ,Deletion } from '../utils/utils.js'
+import {  Placement  } from '../utils/utils.js'
 
 export function createFiber(vnode, returnFiber) {
   const fiber = {
@@ -11,6 +11,7 @@ export function createFiber(vnode, returnFiber) {
     index: 0, //当前层级下的位置
     stateNode: null, // dom节点 || 类实例
     flags: Placement, // 标记fiber 是插入、更新、删除
+    alternate: null, // 指向老节点
   }
   return fiber
 }
