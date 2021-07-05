@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vue2 响应式原理</title>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+<script>
+  
+
+
+  
+</script>
+<script>
+  // low版本 无依赖收集 DOM更新太频繁
+  // 优化方向有两种 编译器 和 依赖收集 
+  // 使用虚拟DOM 
+
+  // function defineReactive (obj, key, val) {
+  //   Object.defineProperty(obj, key, {
+  //     get () {
+  //       console.log('get', val)
+  //       return val
+  //     },
+  //     set (v) {
+  //       if (v !== val) {
+  //         val = v
+  //         update()
+  //         console.log('set', key)
+  //       }
+  //     }
+  //   })
+  // }
+
+  // const obj = {}
+  // // 对obj 做响应式处理
+  // defineReactive(obj, 'foo', '我爱菁菁')
+
+  // function update() {
+  //   app.innerHTML = obj.foo
+  // }
+
+  // // 数据驱动
+
+  // setInterval(() => {
+  //   obj.foo = new Date().toLocaleTimeString()
+  // }, 1000)
+</script>
+</html>
