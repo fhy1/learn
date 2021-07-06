@@ -1,0 +1,17 @@
+<div id="app">
+  <p>{{ count }}</p>
+</div>
+
+<script src="./myvue.js"></script>
+<script>
+  const app = new MyVue({
+    el: '#app',
+    data: {
+      count: 1
+    }
+  })
+  setInterval(() => {
+    console.log(app.count)
+    app.count++
+  }, 1000)
+</script>

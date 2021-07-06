@@ -28,29 +28,37 @@ function observe (obj) {
   })
 }
 
-function set (obj, key, val) {
-  defineReactive(obj, key, val)
+function proxy (vm) {
+  Object.keys(vm.$data).forEach(key => {
+    Object.defineProperty(vm, key, {
+      get () {
+        return vm.$data[key]
+      },
+      set (v) {
+        vm.$data[key] = v
+      }
+    })
+  })
 }
 
-const obj = {
-  foo: 'foo',
-  bar: 'bar',
-  baz: {
-    a: 1
+class MyVue {
+  constructor (options) {
+    // 1、保存选项
+    this.$options = options
+    this.$data = options.data
+
+    // 2.对data选项做响应式处理
+    observe(this.$data)
+
+    // 代理 优化用户体验
+    proxy(this)
+
+    // 3、编译
+  }
+
+  set (obj, key, val) {
+    defineReactive(obj, key, val)
   }
 }
 
-observe(obj)
-
-// obj.bar = 'aaa'
-// obj.baz.a
-
-// obj.baz = {
-//   a: 10
-// }
-
-set(obj, 'dong', 'dong')
-// obj.dong = 'don'
-
-// 对obj 做响应式处理
-// 数组7个变更方法 push、pop、shift、unshift
+console.log(MyVue)
