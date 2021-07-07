@@ -2,16 +2,24 @@ function defineReactive (obj, key, val) {
   // 如果val本身还是对象，则需要递归处理
   observe(val)
 
+  // 创建一个Dep实例和key对应
+  const dep = new Dep()
+
   Object.defineProperty(obj, key, {
     get () {
+      // 依赖收集
+      Dep.target && dep.addDep(Dep.target)
       // console.log('get', key)
       return val
     },
     set (v) {
       if (v !== val) {
         // 如果传入的是一个对象仍需要做响应式处理
-        val = v
         observe(v)
+        val = v
+        dep.notify()
+        // 粗暴更新法 已不需要
+        // watchers.forEach(w => w.update())
         // console.log('set', key)
       }
     }
@@ -101,9 +109,15 @@ class Compile {
     // node.textContent = this.$vm[RegExp.$1]
   }
 
+  // 统一做初始化和更新处理
   update (node, exp, dir) {
     const fn = this[dir + 'Updater']
     fn && fn(node, this.$vm[exp])
+
+    const watch = new Watcher(this.$vm, exp, function (val) {
+      fn && fn(node, val)
+    })
+    console.log(watch)
   }
 
   textUpdater (node, val) {
@@ -127,7 +141,19 @@ class Compile {
 
   // k-text
   text (node, exp) {
-    node.textContent = this.$vm[exp]
+    this.update(node, exp, 'text')
+  }
+
+  html (node, exp) {
+    this.update(node, exp, 'html')
+  }
+
+  htmlUpdater (node, val) {
+    node.innerHTML = val
+  }
+
+  model () {
+
   }
 
   isInter (node) {
@@ -137,7 +163,8 @@ class Compile {
 
 console.log(MyVue)
 
-const watchers = []
+// 有了dep 不需要了
+// const watchers = []
 // 负责具体更新任务的 Watcher
 class Watcher {
   constructor (vm, key, updaterFn) {
@@ -145,10 +172,33 @@ class Watcher {
     this.key = key
     this.updaterFn = updaterFn
 
-    watchers.push(this)
+    // 触发依赖收集
+    Dep.target = this // 尤大这么写的
+    console.log(111)
+    // eslint-disable-next-line no-unused-expressions
+    vm[key] // 触发数据劫持的 get 收集依赖
+    Dep.target = null
+    // 粗暴更新法已不需要
+    // watchers.push(this)
   }
 
   update () {
     this.updaterFn.call(this.vm, this.vm[this.key])
+  }
+}
+
+// 和data中响应式key 之间是 一一对应的关系
+class Dep {
+  constructor () {
+    // 保存关联的watcher实例
+    this.deps = []
+  }
+
+  addDep (dep) {
+    this.deps.push(dep)
+  }
+
+  notify () {
+    this.deps.forEach(dep => dep.update())
   }
 }

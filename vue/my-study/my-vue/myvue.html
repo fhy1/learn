@@ -1,6 +1,9 @@
 <div id="app">
-  <p>{{count}}</p>
+  <p @click="add">{{count}}</p>
   <p k-text="count"></p>
+  <p k-html="txt"></p>
+  <input type="text" k-model="count">
+  {{ desc }}
 </div>
 
 <script src="./myvue.js"></script>
@@ -8,10 +11,17 @@
   const app = new MyVue({
     el: '#app',
     data: {
-      count: 1
+      count: 1,
+      txt: '<p>我爱<span style="color: red">菁菁</span></p>',
+      desc: '1'
+    },
+    methods:{
+      add() {
+        this.count++
+      }
     }
   })
-  // setInterval(() => {
-  //   app.count++
-  // }, 1000)
+  setInterval(() => {
+    app.count++
+  }, 1000)
 </script>
