@@ -1,5 +1,6 @@
 <div id="app">
-  <p>{{ count }}</p>
+  <p>{{count}}</p>
+  <p k-text="count"></p>
 </div>
 
 <script src="./myvue.js"></script>
@@ -10,8 +11,7 @@
       count: 1
     }
   })
-  setInterval(() => {
-    console.log(app.count)
-    app.count++
-  }, 1000)
+  // setInterval(() => {
+  //   app.count++
+  // }, 1000)
 </script>
