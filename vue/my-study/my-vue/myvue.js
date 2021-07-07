@@ -1,3 +1,15 @@
+// 数组响应式
+// 1、替换数组原型中7个方法
+const orginalProto = Array.prototype
+// 备份一份，修改备份
+const arrayProto = Object.create(orginalProto);
+
+['push', 'pop', 'shift', 'unshift'].forEach(method => {
+  // arrayProto[method].apply(this, arguments)
+  console.log('数组执行 ' + method + '操作')
+})
+
+// 对象响应式
 function defineReactive (obj, key, val) {
   // 如果val本身还是对象，则需要递归处理
   observe(val)
@@ -31,6 +43,8 @@ function observe (obj) {
   if (typeof obj !== 'object' || obj === null) {
     return obj
   }
+
+  // 判断传入的obj类型
   Object.keys(obj).forEach(key => {
     defineReactive(obj, key, obj[key])
   })
@@ -54,6 +68,7 @@ class MyVue {
     // 1、保存选项
     this.$options = options
     this.$data = options.data
+    this.$methods = options.methods
 
     // 2.对data选项做响应式处理
     observe(this.$data)
@@ -135,8 +150,15 @@ class Compile {
       if (attrName.startsWith('k-')) {
         const dir = attrName.substring(2)
         this[dir] && this[dir](node, exp)
+      } else if (attrName.startsWith('@')) {
+        const dir = attrName.substring(1)
+        this.bindEvent(node, dir, exp)
       }
     })
+  }
+
+  bindEvent (node, dir, exp) {
+    node.addEventListener(dir, this.$vm.$methods[exp].bind(this.$vm))
   }
 
   // k-text
@@ -152,8 +174,15 @@ class Compile {
     node.innerHTML = val
   }
 
-  model () {
+  model (node, exp) {
+    node.addEventListener('input', (e) => {
+      this.$vm[exp] = e.target.value
+    })
+    this.update(node, exp, 'model')
+  }
 
+  modelUpdater (node, val) {
+    node.value = val
   }
 
   isInter (node) {
