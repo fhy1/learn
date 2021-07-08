@@ -5,6 +5,7 @@
     <button @click="increment">点击</button>
     <button @click="increment2">点击2</button>
     <div>{{ $store.getters.doubleCounter }}</div>
+    <router-view />
   </div>
 </template>
 

@@ -8,16 +8,32 @@ class Store {
     this._getters = options.getters
     this._newgetters = {}
 
+    // 定义computed 选项
+    const computed = {}
+    this.getters = {}
+    const store = this
+    // {doubleCounter(state) {}}
+    Object.keys(this._getters).forEach(key => {
+      // 获取用户定义的getter
+      const fn = store._getters[key]
+      // 转化俄日computed可以使用的无参数形式
+      computed[key] = function () {
+        return fn(store.state)
+      }
+      // 为getters定义制度属性
+      Object.defineProperty(store.getters, key, {
+        get: () => store._vm[key]
+      })
+    })
+
     this._vm = new Vue({
       data () {
         // 可加  _  或 $$ 就可以禁止代理
         return {
-          $$state: options.state,
-          getters: {
-
-          }
+          $$state: options.state
         }
-      }
+      },
+      computed
       // computed: {
       //   myGetter () {
       //     console.log('state', this.state)
@@ -56,19 +72,19 @@ class Store {
     entry(this, payload)
   }
 
-  get getters () {
-    this._newgetters = this.changeGetter()
-    // return this._newgetters
-    return this._newgetters
-  }
+  // get getters () {
+  //   this._newgetters = this.changeGetter()
+  //   // return this._newgetters
+  //   return this._newgetters
+  // }
 
-  changeGetter () {
-    const _newgetters = {}
-    Object.keys(this._getters).forEach((item) => {
-      _newgetters[item] = this._getters[item](this.state) // options.getters[item](options.state)
-    })
-    return _newgetters
-  }
+  // changeGetter () {
+  //   const _newgetters = {}
+  //   Object.keys(this._getters).forEach((item) => {
+  //     _newgetters[item] = this._getters[item](this.state) // options.getters[item](options.state)
+  //   })
+  //   return _newgetters
+  // }
 }
 
 function install (_Vue) {

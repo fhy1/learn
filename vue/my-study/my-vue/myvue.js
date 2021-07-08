@@ -5,8 +5,12 @@ const orginalProto = Array.prototype
 const arrayProto = Object.create(orginalProto);
 
 ['push', 'pop', 'shift', 'unshift'].forEach(method => {
-  // arrayProto[method].apply(this, arguments)
-  console.log('数组执行 ' + method + '操作')
+  arrayProto[method] = function () {
+    // 原始操作
+    arrayProto[method].apply(this, arguments)
+    // 覆盖操作: 通知更新
+    console.log('数组执行 ' + method + '操作')
+  }
 })
 
 // 对象响应式
@@ -45,9 +49,20 @@ function observe (obj) {
   }
 
   // 判断传入的obj类型
-  Object.keys(obj).forEach(key => {
-    defineReactive(obj, key, obj[key])
-  })
+  if (Array.isArray(obj)) {
+    // 覆盖原型，替换7个变更操作
+    // eslint-disable-next-line no-proto
+    obj.__proto__ = arrayProto
+
+    // 对数组内部元素执行响应化
+    for (let i = 0; i < obj.length; i++) {
+      observe(obj[i])
+    }
+  } else {
+    Object.keys(obj).forEach(key => {
+      defineReactive(obj, key, obj[key])
+    })
+  }
 }
 
 function proxy (vm) {
