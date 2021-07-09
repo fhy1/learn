@@ -42,6 +42,60 @@
     Vue.compoonent /filter/directive/use/delete ...mixin
 
     <!-- 声明Vue的构造函数 src/core/instance/index -->
+    this._init(options)
+
+    <!-- 用于扩展一写Vue实例和方法的属性 -->
+    initMixin(Vue)
+    stateMixin(Vue) <!-- $set/$delete/$watch -->
+    eventsMixin(Vue) <!-- $on/$off/$emit/$once -->
+    lifecycleMixin(Vue) <!-- $destory/$forceupdate -->
+    renderMixin(Vue) <!-- $nextTick/_render -->
+
+    <!-- 初始化 src/core/instance/init -->
+    initMixin(Vue) <!-- _init -->
+
+    <!-- 配置项合并 系统选项和用户选项-->
+    if (options && options._isComponent) {
+      initInternalComponent(vm, options)
+    } else {
+      vm.$options = mergeOptions(
+        resolveConstructorOptions(vm.constructor),
+        options || {},
+        vm
+      )
+    }
+
+    <!-- new Vue() 发生了什么？ -->
+    initLifecycle(vm) <!-- 例如 $parnet/$children/$refs/$root 实例属性 -->
+    <!-- 挂载 1.updateComponent 2 new Watcher （一个组件一个watcher） -->
+    <!-- 3 render -> vnode 4 patch -> dom   -->
+
+    initEvents(vm) <!-- 自定义事件 -->
+    <!-- 子组件监听 回调父组件 -->
+    <!-- <comp @my-click="onclick"></comp> 事件存放在父组件上 -->
+
+    <!-- 插槽$slots、$scopedSlots、_c(编译器生成的渲染函数)、_createElement(render(h) 中的 h) -->
+    initRender(vm)
+
+    <!-- 接下来都是状态处理 -->
+    callHook(vm, 'beforeCreate')
+
+    <!-- provide/inject 跨层级传参 react context -->
+    initInjections(vm) <!-- 首先注入祖辈传递下来的数据 -->
+
+    <!-- props/data/computed/watch/methods -->
+    initState(vm)
+
+    <!-- 传递给后代 -->
+    initProvide(vm) // resolve provide after data/props
+
+    <!-- 创建完成 -->
+    callHook(vm, 'created')
+
+    <!-- 如果有el选项则自动挂载 -->
+    if (vm.$options.el) {
+      vm.$mount(vm.$options.el)
+    }
   </div>
 </body>
 </html>
