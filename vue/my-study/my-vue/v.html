@@ -9,6 +9,9 @@
 </head>
 <body>
   <div>
+    <!-- 合并配置项 组件实例属性和方法的初始化 $parent $children 自定义事件的见挺 插槽的处理 两个生命周期的钩子 还有一些组件状态的处理  -->
+
+
     <!-- 扩展 $mount web/entry-runtime-with-compiler.js -->
     prototype.$mount
     vm.$mount('#app')
@@ -51,8 +54,85 @@
     lifecycleMixin(Vue) <!-- $destory/$forceupdate -->
     renderMixin(Vue) <!-- $nextTick/_render -->
 
-    <!-- 初始化 src/core/instance/init -->
-    initMixin(Vue) <!-- _init -->
+      <!-- 初始化 src/core/instance/init -->
+      initMixin(Vue) <!-- _init -->
+      if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+        ob = value.__ob__
+      } else if (
+        shouldObserve &&
+        !isServerRendering() &&
+        (Array.isArray(value) || isPlainObject(value)) &&
+        Object.isExtensible(value) &&
+        !value._isVue
+      )  {
+        <!-- 初始化时需要创建 -->
+        ob = new Observer(value)
+      }
+
+      class Observer
+      创建了一个new dep 负责对象的变更通知：新增属性或者删除属性，数组的7个操作
+
+      数组 
+      对前面备份的原型对象做覆盖
+      覆盖7个变更方法 每次拿出一个方法名
+      original 就是原始方法比如push
+
+      methodsToPatch.forEach(function (method) {
+        const original = arrayProto[method]
+        def(arrayMethods, method, function mutator (...args) {
+          以前的事还需继续
+          const result = original.apply(this, args)
+
+          扩展：变更通知
+          const ob = this.__ob__
+          let inserted
+          以下3个方法可能有新元素插入
+          switch (method) {
+            case 'push':
+            case 'unshift':
+              inserted = args
+              break
+            case 'splice':
+              inserted = args.slice(2)
+              break
+          }
+          if (inserted) ob.observeArray(inserted)
+
+          ob.dep.notify()
+          return result
+        })
+      })
+
+
+      walk 对象 劫持对象  dep 和当前key一一对应 
+      递归遍历 每一个对象就有一个observe实例与之对应
+      依赖收集 
+      if (Dep.target) {
+        和当前组件对应watcher建立关系  一个组件一个watcher dep=>Watcher n对1 也有可能n对1 所以是n对n
+        dep.depend()
+        if (childOb) {
+          子ob也要和当前watcher建立关系
+          childOb.dep.depend()
+          if (Array.isArray(value)) {
+            如果是数组，内部所有的项都要做响应式处理
+            dependArray(value)
+          }
+        }
+      }
+
+       addDep (dep: Dep) {
+          const id = dep.id
+          if (!this.newDepIds.has(id)) {
+            <!-- watcher 保存和它有关的dep -->
+            this.newDepIds.add(id)
+            this.newDeps.push(dep)
+            if (!this.depIds.has(id)) {
+              <!-- dep 知道所有管理的watcher -->
+              dep.addSub(this)
+            }
+          }
+        }
+
 
     <!-- 配置项合并 系统选项和用户选项-->
     if (options && options._isComponent) {
@@ -85,6 +165,11 @@
 
     <!-- props/data/computed/watch/methods -->
     initState(vm)
+    props => methods => data
+    <!-- 处理响应式  -->
+    <!-- 设置了data选项 --> initdata
+    let ob 目标是获取一个observe实例 用于做对象的响应式，对象包括纯对象和数组
+    如果已经是响应式对象，则无需创建ob实例   '__ob__' 的值就是这个实例
 
     <!-- 传递给后代 -->
     initProvide(vm) // resolve provide after data/props
